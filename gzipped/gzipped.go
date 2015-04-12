@@ -23,6 +23,7 @@ func New(h http.Handler) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Encoding", "gzip")
+		w.Header().Add("Vary", "Accept-Encoding")
 		if _, ok := w.(GzipResponseWriter); ok {
 			h.ServeHTTP(w, r)
 			return
