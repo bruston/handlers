@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-type gzipResponseWriter struct {
+type GzipResponseWriter struct {
 	io.Writer
 	http.ResponseWriter
 }
 
-func (w gzipResponseWriter) Write(b []byte) (int, error) {
+func (w GzipResponseWriter) Write(b []byte) (int, error) {
 	return w.Writer.Write(b)
 }
 
@@ -23,12 +23,12 @@ func New(h http.Handler) http.Handler {
 			return
 		}
 		w.Header().Set("Content-Encoding", "gzip")
-		if _, ok := w.(gzipResponseWriter); ok {
+		if _, ok := w.(GzipResponseWriter); ok {
 			h.ServeHTTP(w, r)
 			return
 		}
 		gz := gzip.NewWriter(w)
 		defer gz.Close()
-		h.ServeHTTP(gzipResponseWriter{gz, w}, r)
+		h.ServeHTTP(GzipResponseWriter{gz, w}, r)
 	})
 }
