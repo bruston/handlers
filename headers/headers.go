@@ -2,11 +2,11 @@ package headers
 
 import "net/http"
 
-// New wraps a http.Handler, adding a collection of headers to the request.
+// New wraps a http.Handler, adding a collection of headers to the response.
 func New(h http.Handler, headers http.Header) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for k, v := range headers {
-			r.Header[k] = append(r.Header[k], v...)
+			w.Header()[k] = append(r.Header[k], v...)
 		}
 		h.ServeHTTP(w, r)
 	})

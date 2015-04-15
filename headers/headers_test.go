@@ -8,18 +8,13 @@ import (
 )
 
 func TestAddHeaders(t *testing.T) {
-	existing := http.Header{
-		"existing": {"1"},
-		"1":        {"1"},
-	}
 	added := http.Header{
 		"test": {"1", "2", "3"},
 		"1":    {"2", "3"},
 	}
 	expected := http.Header{
-		"existing": {"1"},
-		"1":        {"1", "2", "3"},
-		"test":     {"1", "2", "3"},
+		"1":    {"2", "3"},
+		"test": {"1", "2", "3"},
 	}
 
 	w := httptest.NewRecorder()
@@ -27,7 +22,6 @@ func TestAddHeaders(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
 	}
-	req.Header = existing
 
 	dummyHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hi"))
@@ -35,7 +29,7 @@ func TestAddHeaders(t *testing.T) {
 
 	h := New(dummyHandler, added)
 	h.ServeHTTP(w, req)
-	if !reflect.DeepEqual(expected, req.Header) {
-		t.Errorf("expected: %v\n received: %v", expected, req.Header)
+	if !reflect.DeepEqual(expected, w.Header()) {
+		t.Errorf("expected: %v\n received: %v", expected, w.Header())
 	}
 }
