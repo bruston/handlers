@@ -6,7 +6,7 @@ import "net/http"
 func New(h http.Handler, headers http.Header) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for k, v := range headers {
-			w.Header()[k] = append(r.Header[k], v...)
+			w.Header()[k] = append(w.Header()[k], v...)
 		}
 		h.ServeHTTP(w, r)
 	})
